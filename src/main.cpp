@@ -59,7 +59,8 @@ int main(int argc, char* argv[])
 	//Set debug level to "info"
 	_bl->debugLevel = 4;
 
-	_ipcClient.reset(new IpcClient(_bl.get(), "/var/lib/homegear/homegearIPC.sock"));
+	//Change the path to the correct location of "homegearIPC.sock"
+	_ipcClient.reset(new IpcClient(_bl.get(), "/var/run/homegear/homegearIPC.sock"));
 	_ipcClient->start();
 
 	_bl->out.printMessage("Startup complete.");
