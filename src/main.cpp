@@ -33,7 +33,9 @@
 
 #include <signal.h>
 
-std::unique_ptr<BaseLib::SharedObjects> _bl(new BaseLib::SharedObjects("", nullptr, false));
+//Homegear's base library class for object sharing
+std::unique_ptr<BaseLib::SharedObjects> _bl(new BaseLib::SharedObjects());
+
 std::unique_ptr<IpcClient> _ipcClient;
 
 void terminate(int32_t signalNumber)
