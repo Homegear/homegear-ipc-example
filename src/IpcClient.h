@@ -42,7 +42,7 @@ class IpcClient : public BaseLib::Ipc::IIpcClient
 public:
 	IpcClient(BaseLib::SharedObjects* bl, std::string socketPath);
 private:
-	virtual void registerRpcMethods();
+	virtual void onConnect();
 
 	// {{{ RPC methods
 	BaseLib::PVariable test1(BaseLib::PArray& parameters);

@@ -37,12 +37,13 @@ IpcClient::IpcClient(BaseLib::SharedObjects* bl, std::string socketPath) : IIpcC
 	_localRpcMethods.emplace("exampleTest2", std::bind(&IpcClient::test2, this, std::placeholders::_1));
 }
 
-void IpcClient::registerRpcMethods()
+void IpcClient::onConnect()
 {
 	try
 	{
 		bool error = false;
 
+		//Register RPC methods
 		{
 			//Create the parameter array
 			BaseLib::PArray parameters = std::make_shared<BaseLib::Array>();
