@@ -62,7 +62,8 @@ int main(int argc, char* argv[])
 	_bl->debugLevel = 4;
 
 	//Change the path to the correct location of "homegearIPC.sock"
-	_ipcClient.reset(new IpcClient(_bl.get(), "/var/run/homegear/homegearIPC.sock"));
+	//_ipcClient.reset(new IpcClient(_bl.get(), "/var/run/homegear/homegearIPC.sock"));
+	_ipcClient.reset(new IpcClient(_bl.get(), "/var/lib/homegear/homegearIPC.sock"));
 	_ipcClient->start();
 
 	_bl->out.printMessage("Startup complete.");

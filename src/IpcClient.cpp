@@ -47,6 +47,7 @@ void IpcClient::onConnect()
 		{
 			//Create the parameter array
 			BaseLib::PArray parameters = std::make_shared<BaseLib::Array>();
+			parameters->reserve(2);
 
 			//First parameter is of type "string" and the method name
 			parameters->push_back(std::make_shared<BaseLib::Variable>("exampleTest1"));
@@ -66,6 +67,7 @@ void IpcClient::onConnect()
 		{
 			//Create the parameter array
 			BaseLib::PArray parameters = std::make_shared<BaseLib::Array>();
+			parameters->reserve(2);
 
 			//First parameter is of type "string" and the method name
 			parameters->push_back(std::make_shared<BaseLib::Variable>("exampleTest2"));
