@@ -52,7 +52,7 @@ void IpcClient::onConnect()
 			//First parameter is of type "string" and the method name
 			parameters->push_back(std::make_shared<BaseLib::Variable>("exampleTest1"));
 
-			//Second paramter is an array containing the method's signature. In this case the array is empty, meaning there are no parameters and the method returns "void".
+			//Second parameter is an array containing the method's signature. In this case the array is empty, meaning there are no parameters and the method returns "void".
 			parameters->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tArray));
 
 			//Call the RPC method "registerRpcMethod"

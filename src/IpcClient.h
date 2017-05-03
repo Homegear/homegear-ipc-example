@@ -33,10 +33,6 @@
 
 #include <homegear-base/BaseLib.h>
 
-#include <thread>
-#include <mutex>
-#include <string>
-
 class IpcClient : public BaseLib::Ipc::IIpcClient
 {
 public:
