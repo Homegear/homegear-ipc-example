@@ -4,16 +4,16 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * Homegear is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with Homegear.  If not, see
  * <http://www.gnu.org/licenses/>.
- * 
+ *
  * In addition, as a special exception, the copyright holders give
  * permission to link the code of portions of this program with the
  * OpenSSL library under certain conditions as described in each
@@ -72,12 +72,15 @@ void IpcClient::onConnect()
 			//First parameter is of type "string" and the method name
 			parameters->push_back(std::make_shared<BaseLib::Variable>("exampleTest2"));
 
-			//Second parameter is a nested array containing the method's signature. In this case the method returns "integer" and has one parameter of type "string".
+			//Second parameter is a nested array containing the method's signature. It is optional for Homegear but required by some RPC standards.
+			//In this case the method returns "integer" and has one parameter of type "string".
 			//The signature is encoded by sending empty variables. Each element of the outer array contains one signature. The inner array (= signature array) contains
 			//the return parameter first followed by the arguments.
-			parameters->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tArray));
-			parameters->back()->arrayValue->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tInteger));
-			parameters->back()->arrayValue->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tString));
+			parameters->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tArray)); //Outer array
+			BaseLib::PVariable signature = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tArray); //Inner array (= signature)
+			signature->arrayValue->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tInteger)); //Return value
+			signature->arrayValue->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tString)); //1st parameter
+			parameters->back()->arrayValue->push_back(signature);
 
 			//Call the RPC method "registerRpcMethod". All RPC methods known by Homegear can be called this way.
 			BaseLib::PVariable result = invoke("registerRpcMethod", parameters);
