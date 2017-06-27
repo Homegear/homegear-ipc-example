@@ -28,13 +28,9 @@
  * files in the program, then also delete it here.
 */
 
-#include <homegear-base/BaseLib.h>
 #include "IpcClient.h"
 
 #include <signal.h>
-
-//Homegear's base library class for object sharing
-std::unique_ptr<BaseLib::SharedObjects> _bl(new BaseLib::SharedObjects());
 
 std::unique_ptr<IpcClient> _ipcClient;
 
@@ -42,9 +38,9 @@ void terminate(int32_t signalNumber)
 {
 	if(signalNumber == SIGTERM || signalNumber == SIGINT)
 	{
-		_bl->out.printMessage("Shutting down (Signal: " + std::to_string(signalNumber) + ")");
+		Ipc::Output::printMessage("Shutting down (Signal: " + std::to_string(signalNumber) + ")");
 		_ipcClient->stop();
-		_bl->out.printMessage("Shutdown complete.");
+		Ipc::Output::printMessage("Shutdown complete.");
 		exit(0);
 	}
 }
@@ -59,13 +55,13 @@ int main(int argc, char* argv[])
 	sigaction(SIGINT, &sa, NULL);
 
 	//Set debug level to "info"
-	_bl->debugLevel = 4;
+	Ipc::Output::setLogLevel(4);
 
 	//Change the path to the correct location of "homegearIPC.sock"
-	_ipcClient.reset(new IpcClient(_bl.get(), "/var/run/homegear/homegearIPC.sock"));
+	_ipcClient.reset(new IpcClient("/var/run/homegear/homegearIPC.sock"));
 	_ipcClient->start();
 
-	_bl->out.printMessage("Startup complete.");
+	Ipc::Output::printMessage("Startup complete.");
 
 	while(true) std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 

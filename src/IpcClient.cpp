@@ -30,7 +30,7 @@
 
 #include "IpcClient.h"
 
-IpcClient::IpcClient(BaseLib::SharedObjects* bl, std::string socketPath) : IIpcClient(bl, socketPath)
+IpcClient::IpcClient(std::string socketPath) : IIpcClient(socketPath)
 {
 	//Bind local RPC methods
 	_localRpcMethods.emplace("exampleTest1", std::bind(&IpcClient::test1, this, std::placeholders::_1));
@@ -46,112 +46,112 @@ void IpcClient::onConnect()
 		//Register RPC methods
 		{
 			//Create the parameter array
-			BaseLib::PArray parameters = std::make_shared<BaseLib::Array>();
+			Ipc::PArray parameters = std::make_shared<Ipc::Array>();
 			parameters->reserve(2);
 
 			//First parameter is of type "string" and the method name
-			parameters->push_back(std::make_shared<BaseLib::Variable>("exampleTest1"));
+			parameters->push_back(std::make_shared<Ipc::Variable>("exampleTest1"));
 
 			//Second parameter is an array containing the method's signature. In this case the array is empty, meaning there are no parameters and the method returns "void".
-			parameters->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tArray));
+			parameters->push_back(std::make_shared<Ipc::Variable>(Ipc::VariableType::tArray));
 
 			//Call the RPC method "registerRpcMethod"
-			BaseLib::PVariable result = invoke("registerRpcMethod", parameters);
+			Ipc::PVariable result = invoke("registerRpcMethod", parameters);
 			if (result->errorStruct)
 			{
 				error = true;
-				_out.printCritical("Critical: Could not register RPC method test1: " + result->structValue->at("faultString")->stringValue);
+				Ipc::Output::printCritical("Critical: Could not register RPC method test1: " + result->structValue->at("faultString")->stringValue);
 			}
 		}
 
 		{
 			//Create the parameter array
-			BaseLib::PArray parameters = std::make_shared<BaseLib::Array>();
+			Ipc::PArray parameters = std::make_shared<Ipc::Array>();
 			parameters->reserve(2);
 
 			//First parameter is of type "string" and the method name
-			parameters->push_back(std::make_shared<BaseLib::Variable>("exampleTest2"));
+			parameters->push_back(std::make_shared<Ipc::Variable>("exampleTest2"));
 
 			//Second parameter is a nested array containing the method's signature. In this case the method returns "integer" and has one parameter of type "string".
 			//The signature is encoded by sending empty variables. Each element of the outer array contains one signature. The inner array (= signature array) contains
 			//the return parameter first followed by the arguments.
-			parameters->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tArray));
-			parameters->back()->arrayValue->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tInteger));
-			parameters->back()->arrayValue->push_back(std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tString));
+			parameters->push_back(std::make_shared<Ipc::Variable>(Ipc::VariableType::tArray));
+			parameters->back()->arrayValue->push_back(std::make_shared<Ipc::Variable>(Ipc::VariableType::tInteger));
+			parameters->back()->arrayValue->push_back(std::make_shared<Ipc::Variable>(Ipc::VariableType::tString));
 
 			//Call the RPC method "registerRpcMethod". All RPC methods known by Homegear can be called this way.
-			BaseLib::PVariable result = invoke("registerRpcMethod", parameters);
+			Ipc::PVariable result = invoke("registerRpcMethod", parameters);
 			if (result->errorStruct)
 			{
 				error = true;
-				_out.printCritical("Critical: Could not register RPC method test2: " + result->structValue->at("faultString")->stringValue);
+				Ipc::Output::printCritical("Critical: Could not register RPC method test2: " + result->structValue->at("faultString")->stringValue);
 			}
 		}
 
-		if (!error) _out.printInfo("Info: RPC methods successfully registered.");
+		if (!error) Ipc::Output::printInfo("Info: RPC methods successfully registered.");
 	}
 	catch (const std::exception& ex)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch (BaseLib::Exception& ex)
+	catch (Ipc::IpcException& ex)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
 	catch (...)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	}
 }
 
 // {{{ RPC methods
-BaseLib::PVariable IpcClient::test1(BaseLib::PArray& parameters)
+Ipc::PVariable IpcClient::test1(Ipc::PArray& parameters)
 {
 	try
 	{
-		_out.printInfo("Test1 called");
+		Ipc::Output::printInfo("Test1 called");
 
-		return BaseLib::PVariable(new BaseLib::Variable(std::string("Test1 ") + std::to_string(BaseLib::HelperFunctions::getTimeSeconds())));
+		return Ipc::PVariable(new Ipc::Variable(std::string("Test1 ") + std::to_string(Ipc::HelperFunctions::getTimeSeconds())));
 	}
 	catch (const std::exception& ex)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch (BaseLib::Exception& ex)
+	catch (Ipc::IpcException& ex)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
 	catch (...)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	}
-	return BaseLib::Variable::createError(-32500, "Unknown application error.");
+	return Ipc::Variable::createError(-32500, "Unknown application error.");
 }
 
-BaseLib::PVariable IpcClient::test2(BaseLib::PArray& parameters)
+Ipc::PVariable IpcClient::test2(Ipc::PArray& parameters)
 {
 	try
 	{
-		if(parameters->size() != 1) return BaseLib::Variable::createError(-1, "Method expects exactly one parameter. " + std::to_string(parameters->size()) + " given.");
-		if(parameters->at(0)->type != BaseLib::VariableType::tString) return BaseLib::Variable::createError(-1, "Parameter is not of type string.");
+		if(parameters->size() != 1) return Ipc::Variable::createError(-1, "Method expects exactly one parameter. " + std::to_string(parameters->size()) + " given.");
+		if(parameters->at(0)->type != Ipc::VariableType::tString) return Ipc::Variable::createError(-1, "Parameter is not of type string.");
 
-		_out.printInfo("Test2 called");
+		Ipc::Output::printInfo("Test2 called");
 
 		//Return the string length
-		return std::make_shared<BaseLib::Variable>((int32_t)parameters->at(0)->stringValue.size());
+		return std::make_shared<Ipc::Variable>((int32_t)parameters->at(0)->stringValue.size());
 	}
 	catch (const std::exception& ex)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch (BaseLib::Exception& ex)
+	catch (Ipc::IpcException& ex)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
 	catch (...)
 	{
-		_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		Ipc::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	}
-	return BaseLib::Variable::createError(-32500, "Unknown application error.");
+	return Ipc::Variable::createError(-32500, "Unknown application error.");
 }
 // }}}

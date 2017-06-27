@@ -31,18 +31,18 @@
 #ifndef IPCCLIENT_H_
 #define IPCCLIENT_H_
 
-#include <homegear-base/BaseLib.h>
+#include <homegear-ipc/IIpcClient.h>
 
-class IpcClient : public BaseLib::Ipc::IIpcClient
+class IpcClient : public Ipc::IIpcClient
 {
 public:
-	IpcClient(BaseLib::SharedObjects* bl, std::string socketPath);
+	IpcClient(std::string socketPath);
 private:
 	virtual void onConnect();
 
 	// {{{ RPC methods
-	BaseLib::PVariable test1(BaseLib::PArray& parameters);
-	BaseLib::PVariable test2(BaseLib::PArray& parameters);
+	Ipc::PVariable test1(Ipc::PArray& parameters);
+	Ipc::PVariable test2(Ipc::PArray& parameters);
 	// }}}
 };
 
