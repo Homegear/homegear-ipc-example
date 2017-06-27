@@ -2,6 +2,12 @@
 
 This example project demonstrates how to access Homegear's IPC (= Inter-process Communication) interface. It registers two RPC methods in Homegear (`exampleTest1()` and `exampleTest2()`). `exampleTest1()` prints a line to the terminal and returns a string containing the current timestamp. `exampleTest2()` expects a string as parameter, also prints a line to the terminal and returns the length of the string.
 
+Before starting, either compile libhomegear-ipc or on Debian, Raspbian or Ubuntu install it with:
+
+```
+apt install libhomegear-ipc
+```
+
 To compile, just execute:
 
 ```
